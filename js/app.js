@@ -74,6 +74,7 @@
   function render() {
     const r = route();
     window.scrollTo(0, 0);
+    if (r.page === 'navaratri') return renderAbout();
     if (r.page === 'theme') return renderTheme();
     if (r.page === 'golu') return renderGolu(r.id);
     return renderLanding();
@@ -127,7 +128,7 @@
             ${data.languages.map(l =>
               `<button class="pill${l.code === lang ? ' active' : ''}" data-lang="${l.code}">${esc(l.label)}</button>`).join('')}
           </div>
-          <a class="btn" id="enter" href="#/theme">${esc(ui('enter'))}</a>
+          <a class="btn" id="enter" href="#/navaratri">${esc(ui('enter'))}</a>
         </div>
         ${footer()}
         <div class="kolam"></div>
@@ -176,6 +177,35 @@
       ${showBack ? `<a href="#/theme">← ${esc(ui('back'))}</a>` : ''}
       ${langSelect()}
     </header><div class="kolam"></div>`;
+  }
+
+  // ---------- what is Navarathiri Golu ----------
+  function renderAbout() {
+    const a = data.about;
+    const next = `<a class="btn" href="#/theme">${esc(ui('continue'))} →</a>`;
+    app.innerHTML = `
+      <div class="page theme-page">
+        ${topbar(false)}
+        <main class="about-wrap fade">
+          <h1>${esc(t(a.title))}</h1>
+          <div class="about-cta top">${next}</div>
+          <div class="about-grid">
+            <figure class="about-photo">
+              <img src="${esc(a.image)}" alt="${esc(t(a.title))}">
+            </figure>
+            <div class="about-text">
+              <p class="lead">${esc(t(a.intro))}</p>
+              ${a.sections.map(sec => `
+                <h2>${esc(t(sec.heading))}</h2>
+                ${sec.paras.map(p => `<p>${esc(t(p))}</p>`).join('')}`).join('')}
+            </div>
+          </div>
+          <div class="about-cta bottom">${next}</div>
+        </main>
+        ${footer()}
+        <div class="kolam"></div>
+      </div>`;
+    bindLangSelect();
   }
 
   // ---------- theme ----------
@@ -239,17 +269,18 @@
     else renderElement($('#main'), el);
   }
 
-  // The theme's story, kept in a fixed card beside the pictures (open on wide screens, folded on narrow ones).
+  // The theme's story, in a card beside the pictures (below them on narrow screens). Open by default; visitors can fold it.
   function storyCard(el) {
     const st = el.storyText;
-    const open = window.innerWidth >= 1250 ? ' open' : '';
-    return `<details class="story"${open}>
+    return `<details class="story" open>
       <summary>📖 ${esc(ui('tale'))}: ${esc(t(el.tale.story))}</summary>
       <div class="story-body">
-        ${st.paras.map(p => `<p>${esc(t(p))}</p>`).join('')}
-        <h4>${esc(ui('teaches'))}</h4>
-        <p>${esc(t(st.why))}</p>
-        <blockquote>${esc(t(st.message))}</blockquote>
+        ${st.blocks.map(b => {
+          if (b.type === 'h') return `<h4>${esc(t(b.text))}</h4>`;
+          if (b.type === 'ul') return `<ul>${b.items.map(i => `<li>${esc(t(i))}</li>`).join('')}</ul>`;
+          if (b.type === 'quote') return `<blockquote>${esc(t(b.text))}</blockquote>`;
+          return `<p>${esc(t(b.text))}</p>`;
+        }).join('')}
       </div>
     </details>`;
   }

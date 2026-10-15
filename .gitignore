@@ -6,3 +6,5 @@ golu_images/
 WhatsApp Unknown*/
 # raw new photos, the site uses the resized copies in images/
 new_images/
+# generated QR codes (kept local)
+qr_codes/
