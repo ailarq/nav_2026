@@ -101,6 +101,8 @@
     let last = Number(store.get('golu_palette'));
     let n;
     do { n = Math.floor(Math.random() * PALETTES.length); } while (n === last && PALETTES.length > 1);
+    const want = Number(new URLSearchParams(location.search).get('palette')); // preview: ?palette=0..9
+    if (Number.isInteger(want) && want >= 0 && want < PALETTES.length && new URLSearchParams(location.search).has('palette')) n = want;
     store.set('golu_palette', String(n));
     const p = PALETTES[n];
     const root = document.documentElement.style;
