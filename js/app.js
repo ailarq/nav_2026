@@ -163,8 +163,8 @@
     const f = data.footer;
     if (!f) return '';
     return `<footer class="site-footer">
-      <div class="f-main"><strong>${esc(f.name)}</strong><span>${esc(f.address)}</span>
-        <a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.urlLabel)}</a></div>
+      <div class="f-main">${f.name ? `<strong>${esc(f.name)}</strong>` : ''}${f.address ? `<span>${esc(f.address)}</span>` : ''}
+        ${f.url ? `<a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.urlLabel || f.url)}</a>` : ''}</div>
       <div class="f-credit">${esc(f.credit)}</div>
     </footer>`;
   }
