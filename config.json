@@ -1,5 +1,5 @@
 {
-  "showGallery": true,
+  "showGallery": false,
   "defaultLanguage": "en",
   "music": "audio/divine.mp3",
   "musicVolume": 0.4,
