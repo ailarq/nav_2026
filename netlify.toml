@@ -1,6 +1,4 @@
-# Plain static site: nothing to build, publish the repo root.
-# The command is a harmless placeholder because an empty one is ignored
-# and Netlify then falls back to the dashboard value.
+# Stage the static site in the directory expected by Netlify.
 [build]
-  command = "echo 'static site - no build step'"
-  publish = "."
+  command = "node scripts/prepare-site.cjs"
+  publish = "public"

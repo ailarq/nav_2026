@@ -10,8 +10,9 @@ Browsers block `fetch` on `file://`, so use a tiny server:
 then open http://localhost:8000
 
 ## Deploy
-Push to GitHub, then in Netlify choose "Import from Git" with build command empty and publish directory `.`.
-Every push redeploys.
+Push to GitHub, then in Netlify choose "Import from Git". The repository configuration
+stages the static files in `public` using `node scripts/prepare-site.cjs` and publishes
+that directory. No Hugo build is required. Every push redeploys.
 
 ## Settings - `config.json`
 | Key | Meaning |
