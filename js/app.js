@@ -182,7 +182,7 @@
   // ---------- what is Navarathiri Golu ----------
   function renderAbout() {
     const a = data.about;
-    const next = `<a class="btn" href="#/theme">${esc(ui('continue'))} →</a>`;
+    const next = `<a class="btn" href="#/theme">${esc(ui('discoverTheme'))} →</a>`;
     app.innerHTML = `
       <div class="page theme-page">
         ${topbar(false)}
