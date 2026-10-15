@@ -1,4 +1,5 @@
 .DS_Store
+public/
 # original full-size photos; the site uses the copies in images/
 golu_images/
 # raw WhatsApp media, not used by the site yet
