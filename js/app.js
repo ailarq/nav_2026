@@ -202,6 +202,21 @@
     else renderElement($('#main'), el);
   }
 
+  // The theme's story, kept in a fixed card beside the pictures (open on wide screens, folded on narrow ones).
+  function storyCard(el) {
+    const st = el.storyText;
+    const open = window.innerWidth >= 1250 ? ' open' : '';
+    return `<details class="story"${open}>
+      <summary>📖 ${esc(ui('tale'))}: ${esc(t(el.tale.story))}</summary>
+      <div class="story-body">
+        ${st.paras.map(p => `<p>${esc(t(p))}</p>`).join('')}
+        <h4>${esc(ui('teaches'))}</h4>
+        <p>${esc(t(st.why))}</p>
+        <blockquote>${esc(t(st.message))}</blockquote>
+      </div>
+    </details>`;
+  }
+
   function renderElement(main, el) {
     main.innerHTML = `
       <section class="intro" style="--c:${el.color}">
@@ -210,9 +225,14 @@
         ${el.tale ? `<div class="tale"><span>💛 ${esc(ui('emotion'))}: <strong>${esc(t(el.tale.emotion))}</strong></span><span>📖 ${esc(ui('tale'))}: <strong>${esc(t(el.tale.story))}</strong></span></div>` : ''}
         ${el.temple ? `<div class="temple">🛕 ${esc(ui('sacredTemple'))}: <strong>${esc(t(el.temple))}</strong></div>` : ''}
       </section>
-      <div class="stage" id="stage"></div>
-      <p class="hint">${esc(ui('tapHint'))}</p>
-      <section class="info" id="info"></section>`;
+      <div class="el-grid${el.storyText ? '' : ' solo'}" style="--c:${el.color}">
+        <div class="viewer">
+          <div class="stage" id="stage"></div>
+          <p class="hint">${esc(ui('tapHint'))}</p>
+          <section class="info" id="info"></section>
+        </div>
+        ${el.storyText ? storyCard(el) : ''}
+      </div>`;
     showSlide(el, idx);
 
     const stage = $('#stage');
@@ -266,8 +286,8 @@
       b.addEventListener('click', () => showSlide(el, idx + Number(b.dataset.d))));
     $('#info').querySelectorAll('[data-i]').forEach(b =>
       b.addEventListener('click', () => showSlide(el, Number(b.dataset.i))));
-    const on = $('#info .thumbs .on');
-    if (on) on.scrollIntoView({ block: 'nearest', inline: 'center' });
+    const strip = $('#info .thumbs'), on = $('#info .thumbs .on');
+    if (strip && on) strip.scrollLeft = on.offsetLeft - (strip.clientWidth - on.clientWidth) / 2; // only the strip moves, not the page
 
     if (items[n + 1] && (items[n + 1].type || 'image') === 'image') new Image().src = items[n + 1].src; // preload next
   }

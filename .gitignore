@@ -4,3 +4,5 @@ public/
 golu_images/
 # raw WhatsApp media, not used by the site yet
 WhatsApp Unknown*/
+# raw new photos, the site uses the resized copies in images/
+new_images/
