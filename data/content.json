@@ -1344,5 +1344,12 @@
       }
     ]
   },
-  "author": "Gayathiri Dheep"
+  "author": "Gayathiri Dheep",
+  "footer": {
+    "name": "AILARQ Free Coding Camp for Kids",
+    "address": "Ballarat, VIC 3350",
+    "url": "https://www.ailarq.com",
+    "urlLabel": "www.ailarq.com",
+    "credit": "Made by AILARQ | © 2026 | Maintained by AILARQ"
+  }
 }

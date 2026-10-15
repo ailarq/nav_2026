@@ -127,11 +127,44 @@
           </div>
           <a class="btn" id="enter" href="#/theme">${esc(ui('enter'))}</a>
         </div>
+        ${footer()}
         <div class="kolam"></div>
       </div>`;
     app.querySelectorAll('.pill').forEach(b =>
       b.addEventListener('click', () => setLang(b.dataset.lang)));
     $('#enter').addEventListener('click', () => tryPlay()); // click = user gesture, music may start
+  }
+
+  // ---------- tile icons ----------
+  // Each theme tile shows either its emoji or a random photo from that section.
+  // The choice is made once per page load so all tiles match (config.json: tileStyle, emojiChance).
+  const tileIcons = {};
+  function pickTileIcons() {
+    const style = cfg.tileStyle || 'emoji';
+    const chance = cfg.emojiChance == null ? 0.25 : cfg.emojiChance;
+    const usePhotos = style === 'photo' || (style === 'mix' && Math.random() >= chance);
+    if (!usePhotos) return;
+    data.elements.forEach(e => {
+      const imgs = (e.items || []).filter(m => (m.type || 'image') === 'image');
+      if (imgs.length) tileIcons[e.id] = imgs[Math.floor(Math.random() * imgs.length)];
+    });
+  }
+  function tileIcon(e) {
+    const m = tileIcons[e.id];
+    if (!m) return `<span class="ico">${e.icon}</span>`;
+    const th = m.thumb || m.src.replace(/([^/]+)$/, 'thumbs/$1');
+    return `<span class="ico ph"><img src="${esc(th)}" alt="" onerror="this.onerror=null;this.src='${esc(m.src)}'"></span>`;
+  }
+
+  // ---------- footer ----------
+  function footer() {
+    const f = data.footer;
+    if (!f) return '';
+    return `<footer class="site-footer">
+      <div class="f-main"><strong>${esc(f.name)}</strong><span>${esc(f.address)}</span>
+        <a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.urlLabel)}</a></div>
+      <div class="f-credit">${esc(f.credit)}</div>
+    </footer>`;
   }
 
   // ---------- header ----------
@@ -157,7 +190,7 @@
           <div class="elements-row">
             ${data.elements.filter(e => !e.extra).map(e => `
               <a class="el-card" style="--c:${e.color}" href="#/golu/${e.id}">
-                <span class="ico">${e.icon}</span>
+                ${tileIcon(e)}
                 <strong>${esc(t(e.name))}</strong>
                 <small>${esc(t(e.sanskrit))}</small>
               </a>`).join('')}
@@ -166,6 +199,7 @@
           <p>${esc(t(th.golu))}</p>
           <a class="btn" href="#/golu/${data.elements[0].id}">${esc(ui('explore'))}</a>
         </main>
+        ${footer()}
         <div class="kolam"></div>
       </div>`;
     bindLangSelect();
@@ -179,7 +213,7 @@
 
     const nav = data.elements.map(e => `
       <a href="#/golu/${e.id}" style="--c:${e.color}"${el && el.id === e.id ? ' class="active"' : ''}>
-        <span class="ico">${e.icon}</span>
+        ${tileIcon(e)}
         <span class="txt">${esc(t(e.name))}<small>${esc(t(e.sanskrit))}</small></span>
       </a>`).join('') +
       (galleryOn ? `<div class="sep"></div>
@@ -195,6 +229,7 @@
           <div class="divider" role="separator" aria-orientation="vertical" tabindex="0"></div>
           <main class="main fade" id="main"></main>
         </div>
+        ${footer()}
       </div>`;
     bindLangSelect();
     initDivider();
@@ -220,7 +255,7 @@
   function renderElement(main, el) {
     main.innerHTML = `
       <section class="intro" style="--c:${el.color}">
-        <h2><span>${el.icon}</span> ${esc(t(el.name))} <span class="sk">${esc(t(el.sanskrit))}</span></h2>
+        <h2>${tileIcon(el)} ${esc(t(el.name))} <span class="sk">${esc(t(el.sanskrit))}</span></h2>
         <p>${esc(t(el.intro))}</p>
         ${el.tale ? `<div class="tale"><span>💛 ${esc(ui('emotion'))}: <strong>${esc(t(el.tale.emotion))}</strong></span><span>📖 ${esc(ui('tale'))}: <strong>${esc(t(el.tale.story))}</strong></span></div>` : ''}
         ${el.temple ? `<div class="temple">🛕 ${esc(ui('sacredTemple'))}: <strong>${esc(t(el.temple))}</strong></div>` : ''}
@@ -389,6 +424,7 @@
     document.documentElement.lang = lang;
     if (cfg.music) { audio.src = cfg.music; audio.volume = cfg.musicVolume == null ? 0.4 : cfg.musicVolume; }
     pickPalette();
+    pickTileIcons();
     paintMusicBtn();
     tryPlay(); // autoplay is usually blocked, so this starts on the first tap
     render();

@@ -2,5 +2,7 @@
   "showGallery": true,
   "defaultLanguage": "en",
   "music": "audio/divine.mp3",
-  "musicVolume": 0.4
+  "musicVolume": 0.4,
+  "tileStyle": "mix",
+  "emojiChance": 0.25
 }
